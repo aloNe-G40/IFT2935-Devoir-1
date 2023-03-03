@@ -11,6 +11,7 @@ JOIN PERSONNE USING(N°PERS)
 WHERE DEPT=75 AND GRAVITE='Fatale';
 
 -- Q2
+-- selectionner les personnes qui ont été blessées chaque fois elles étaient conductrices et ont un accident.
 SELECT * 
 FROM PERSONNE
 where exists (SELECT N°PERS FROM BLESSE WHERE BLESSE.N°PERS=PERSONNE.N°PERS)
@@ -19,6 +20,12 @@ SELECT N°ACC FROM VEHPART WHERE VEHPART.N°COND=PERSONNE.N°PERS
 AND N°ACC NOT IN(
 SELECT N°ACC FROM BLESSE
 WHERE BLESSE.N°PERS=PERSONNE.N°PERS));
+
+-- selectionner les personnes qui ont été blessées au mois une fois quand elles étaient conductrices et ont un accident.
+SELECT PERSONNE.* 
+FROM PERSONNE
+JOIN VEHPART ON VEHPART.N°COND=PERSONNE.N°PERS
+JOIN BLESSE ON BLESSE.N°PERS=PERSONNE.N°PERS;
 
 -- Q3
 SELECT NOM, PRENOM,AGE 
@@ -29,10 +36,10 @@ WHERE GRAVITE='Grave'
 AND (ACC_DATE BETWEEN '2023-02-14 00:00:00' AND '2023-02-14 23:59:59');
 
 -- Q4
-select count(DISTINCT N°ACC),DEPT from
+select count(DISTINCT N°ACC) as count_accident, DEPT from
 ACCIDENT join BLESSE using(N°ACC)
 join VEHICULE using(N°VEH)
-WHERE (ACC_DATE BETWEEN '2022-01-01' AND '2023-01-01') 
+WHERE (ACC_DATE BETWEEN '2022-01-01' AND '2022-12-31') 
 AND MARQUE='volkswagen'
 AND GRAVITE='Fatale' 
 GROUP BY DEPT;
