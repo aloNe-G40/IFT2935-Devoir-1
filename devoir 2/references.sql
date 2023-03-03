@@ -1,0 +1,25 @@
+START transaction;
+
+USE `accidinfo`;
+ALTER TABLE CONDUCTEUR
+    ADD FOREIGN KEY (N°PERS) REFERENCES PERSONNE(N°PERS),
+    ADD FOREIGN KEY (N°VEH) REFERENCES VEHICULE(N°VEH);
+
+ALTER TABLE VEHPART
+    ADD FOREIGN KEY (N°ACC) REFERENCES ACCIDENT(N°ACC),
+    ADD FOREIGN KEY (N°VEH) REFERENCES VEHICULE(N°VEH);
+
+-- Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails (`accidinfo`.`#sql-c488_14`, CONSTRAINT `blesse_ibfk_1` FOREIGN KEY (`N°ACC`) REFERENCES `accident` (`N°ACC`))
+-- Parce que dans la table de ACCIDENT, il n'existe pas de accident qui a un N°ACC='159753260', 
+-- alors c'est impossible d'établir un lien entre la blessure N°ACC='159753260',N°PERS=00006 et un accident
+DELETE FROM BLESSE WHERE N°ACC='159753260';
+
+ALTER TABLE BLESSE
+    ADD FOREIGN KEY (N°ACC) REFERENCES ACCIDENT(N°ACC),
+    ADD FOREIGN KEY (N°PERS) REFERENCES PERSONNE(N°PERS),
+    ADD FOREIGN KEY (N°VEH) REFERENCES VEHICULE(N°VEH),
+    ADD FOREIGN KEY (GRAVITE) REFERENCES GRAVITES(GRAVITE);
+
+commit ;
+
+
